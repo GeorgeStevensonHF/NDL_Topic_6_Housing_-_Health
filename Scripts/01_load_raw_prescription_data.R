@@ -7,6 +7,7 @@ library(writexl)
 library(ggplot2)
 library(lubridate)
 library(readr)
+library(data.table)
 
 # Note: dates covered: July 2024 - June 2025
 
@@ -71,9 +72,17 @@ read_presc_function <- function(codes){
   
 full_inhaler_list <- read_presc_function(codes = inhaler_codelist)
 
+# Create df
+
 full_inhaler_df <- bind_rows(full_inhaler_list)
 
 full_inhaler_df <- full_inhaler_df %>% select(!(X1:X8))
+
+# Group df
+
+inhalers_grouped <- full_inhaler_df %>%
+  group_by(bnf_code, row_id, row_name) %>%
+  summarise(total_cost = sum(actual_cost), total_items = sum(items), total_quantity = sum(quantity))
 
 
 ########################
@@ -85,7 +94,13 @@ full_inhaler_df <- full_inhaler_df %>% select(!(X1:X8))
 
 full_antianx_list <- read_presc_function(codes = list('0401'))
 
+# Create df
 antianx_df <- full_antianx_list[[1]]
+
+# Group df
+antianx_grouped <- antianx_df %>%
+  group_by(bnf_code, row_id, row_name) %>%
+  summarise(total_cost = sum(actual_cost), total_items = sum(items), total_quantity = sum(quantity))
 
 ############################
 ########### ANTI PSYCHOTICS
@@ -95,7 +110,13 @@ antianx_df <- full_antianx_list[[1]]
 
 full_antipsych_list <- read_presc_function(codes = list('0402'))
 
+# Create df
 antipsych_df <- full_antipsych_list[[1]]
+
+# Group df
+antipsych_grouped <- antipsych_df %>%
+  group_by(bnf_code, row_id, row_name) %>%
+  summarise(total_cost = sum(actual_cost), total_items = sum(items), total_quantity = sum(quantity))
 
 #############################
 ########### ANTI DEPRESSANTS
@@ -105,4 +126,10 @@ antipsych_df <- full_antipsych_list[[1]]
 
 full_antidepress_list <- read_presc_function(codes = list('0403'))
 
+# Create df
 antidepress_df <- full_antidepress_list[[1]]
+
+#Group df
+antidepress_grouped <- antidepress_df %>%
+  group_by(bnf_code, row_id, row_name) %>%
+  summarise(total_cost = sum(actual_cost), total_items = sum(items), total_quantity = sum(quantity))
