@@ -22,6 +22,7 @@ patients_by_practice <- patients_by_practice %>%
 
 join_practices_prescriptions <- function(practices_df = patients_by_practice, prescription_df, label){ 
   practices_joined <- left_join(practices_df, prescription_df, join_by(PRACTICE_CODE == row_id)) %>%
+    mutate_at(c('total_items', 'total_quantity', 'total_cost'), ~replace_na(.,0)) %>%
     mutate(items_per_LSOA = total_items*PATIENT_PROPORTION) %>%
     mutate(quantity_per_LSOA = total_quantity*PATIENT_PROPORTION) %>%
     mutate(cost_per_LSOA = total_cost*PATIENT_PROPORTION)
@@ -87,5 +88,13 @@ for (i in 1:length(inhaler_codelist)) {
   inhalers_joined_list <- append(inhalers_joined_list, list(LSOA_summed))
 }
 
-LSOA_inhaler_summed <- bind_rows(inhalers_joined_list)
+LSOA_inhaler_summed <- bind_rows(inhalers_joined_list) %>%
+  group_by(LSOA_CODE) %>%
+  summarise(items = sum(items), quantity = sum(quantity), cost = sum(cost)) %>%
+  mutate(drug_type = 'inhaler')
 
+all_eng_pres <- rbind(LSOA_antianx_summed, LSOA_antidepress_summed, LSOA_antipsych_summed, LSOA_inhaler_summed)
+
+write.csv(all_eng_pres, 'Outputs/england_all_prescriptions.csv')
+
+hist((LSOA_inhaler_summed$items[LSOA_inhaler_summed$LSOA_CODE != 'EMPTY']))
