@@ -65,7 +65,7 @@ sct_inhalers_by_dz <- all_scotland_data %>%
   summarise(items = sum(NumberOfPaidItems), quantity = sum(PaidQuantity), cost = sum(GrossIngredientCost)) %>%
   mutate(item = 'inhaler') %>%
   full_join(., practices_to_HSCP, by = join_by(GPPractice == PracticeCode)) %>%
-  group_by(SubHSCPName) %>%
+  group_by(SubHSCPName, item) %>%
   summarise(items = sum(items), quantity = sum(quantity), cost = sum(cost)) %>%
   full_join(., sct_dz_to_hscp, by = 'SubHSCPName') %>%
   mutate(items_per_dz = items*prop_of_subHSCP) %>%
@@ -79,7 +79,7 @@ sct_antidep_by_dz <- all_scotland_data %>%
   summarise(items = sum(NumberOfPaidItems), quantity = sum(PaidQuantity), cost = sum(GrossIngredientCost)) %>%
   mutate(item = 'antidep') %>%
   full_join(., practices_to_HSCP, by = join_by(GPPractice == PracticeCode)) %>%
-  group_by(SubHSCPName) %>%
+  group_by(SubHSCPName, item) %>%
   summarise(items = sum(items), quantity = sum(quantity), cost = sum(cost)) %>%
   full_join(., sct_dz_to_hscp, by = 'SubHSCPName') %>%
   mutate(items_per_dz = items*prop_of_subHSCP) %>%
@@ -92,7 +92,7 @@ sct_antianx_by_dz <- all_scotland_data %>%
   summarise(items = sum(NumberOfPaidItems), quantity = sum(PaidQuantity), cost = sum(GrossIngredientCost)) %>%
   mutate(item = 'antianx') %>%
   full_join(., practices_to_HSCP, by = join_by(GPPractice == PracticeCode)) %>%
-  group_by(SubHSCPName) %>%
+  group_by(SubHSCPName, item) %>%
   summarise(items = sum(items), quantity = sum(quantity), cost = sum(cost)) %>%
   full_join(., sct_dz_to_hscp, by = 'SubHSCPName') %>%
   mutate(items_per_dz = items*prop_of_subHSCP) %>%
@@ -105,7 +105,7 @@ sct_antipsych_by_dz <- all_scotland_data %>%
   summarise(items = sum(NumberOfPaidItems), quantity = sum(PaidQuantity), cost = sum(GrossIngredientCost)) %>%
   mutate(item = 'antipsych') %>%
   full_join(., practices_to_HSCP, by = join_by(GPPractice == PracticeCode)) %>%
-  group_by(SubHSCPName) %>%
+  group_by(SubHSCPName, item) %>%
   summarise(items = sum(items), quantity = sum(quantity), cost = sum(cost)) %>%
   full_join(., sct_dz_to_hscp, by = 'SubHSCPName') %>%
   mutate(items_per_dz = items*prop_of_subHSCP) %>%
